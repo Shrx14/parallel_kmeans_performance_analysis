@@ -7,7 +7,7 @@ The full workflow is in:
 
 ## Project Scope
 
-- Dataset size: **2,000,000 points**
+- Dataset sizes benchmarked: **10,000**, **100,000**, and **2,000,000** points
 - Features: **8**
 - Clusters: **8**
 - Hardware target in notebook: **Google Colab T4 runtime** (2 vCPUs + Tesla T4 GPU)
@@ -26,28 +26,58 @@ The notebook:
 - **MPI C** (`kmeans_mpi.c`) with 1/2/4 processes
 - **CUDA C** (`kmeans_cuda.cu`) on NVIDIA T4
 
-## Notebook Benchmark Results
+## Notebook Benchmark Results (Varying Number of Elements)
 
 From the executed notebook output:
 
-| Implementation | Time (s) | Speedup vs Serial | Efficiency |
+### N = 10,000
+
+| Implementation | Time (s) | Speedup vs Serial | Iterations |
 |---|---:|---:|---:|
-| Serial | 2.2564 | 1.00x | 100.0% |
-| OMP 1T | 2.6695 | 0.85x | 84.5% |
-| OMP 2T | 2.3767 | 0.95x | 47.5% |
-| OMP 4T | 3.7036 | 0.61x | 15.2% |
-| MPI 1P | 2.1536 | 1.05x | 104.8% |
-| MPI 2P | 2.1244 | 1.06x | 53.1% |
-| MPI 4P | 2.3036 | 0.98x | 24.5% |
-| CUDA | 0.2098 | 10.75x | GPU (N/A) |
+| Serial | 0.0127 | 1.00x | 15 |
+| OMP 1T | 0.0137 | 0.93x | 15 |
+| OMP 2T | 0.0199 | 0.64x | 15 |
+| OMP 4T | 0.0134 | 0.95x | 15 |
+| MPI 1P | 0.0121 | 1.05x | 15 |
+| MPI 2P | 0.0142 | 0.89x | 15 |
+| MPI 4P | 0.0158 | 0.81x | 15 |
+| CUDA | 0.0024 | 5.37x | 15 |
+
+### N = 100,000
+
+| Implementation | Time (s) | Speedup vs Serial | Iterations |
+|---|---:|---:|---:|
+| Serial | 0.1021 | 1.00x | 22 |
+| OMP 1T | 0.1236 | 0.83x | 22 |
+| OMP 2T | 0.0971 | 1.05x | 22 |
+| OMP 4T | 0.1049 | 0.97x | 22 |
+| MPI 1P | 0.1020 | 1.00x | 22 |
+| MPI 2P | 0.1156 | 0.88x | 22 |
+| MPI 4P | 0.1194 | 0.85x | 22 |
+| CUDA | 0.0098 | 10.44x | 22 |
+
+### N = 2,000,000
+
+| Implementation | Time (s) | Speedup vs Serial | Iterations |
+|---|---:|---:|---:|
+| Serial | 2.2041 | 1.00x | 24 |
+| OMP 1T | 2.4193 | 0.91x | 24 |
+| OMP 2T | 2.3632 | 0.93x | 24 |
+| OMP 4T | 3.0247 | 0.73x | 24 |
+| MPI 1P | 2.1495 | 1.03x | 24 |
+| MPI 2P | 2.0689 | 1.07x | 24 |
+| MPI 4P | 2.7843 | 0.79x | 24 |
+| CUDA | 0.2101 | 10.49x | 24 |
 
 ## Key Findings
 
-- **CUDA achieved the best performance** with ~**10.75x** speedup.
-- On this 2-vCPU runtime, OpenMP/MPI scaling is constrained by limited CPU resources and synchronization/memory overhead.
-- Best CPU-side parallel variants in this run:
-  - OpenMP: **2 threads**
-  - MPI: **2 processes**
+- **CUDA is consistently the best performer** across all tested dataset sizes.
+- CUDA speedup increases with larger N:
+  - **5.37x** at 10,000 points
+  - **10.44x** at 100,000 points
+  - **10.49x** at 2,000,000 points
+- On this 2-vCPU runtime, OpenMP/MPI speedups remain limited by CPU resource constraints and synchronization overhead.
+- Best CPU-side result at the largest N tested (2,000,000) is **MPI 2P (1.07x)**.
 
 ## Repository Contents
 
