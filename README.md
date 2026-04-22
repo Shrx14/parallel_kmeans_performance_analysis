@@ -3,7 +3,7 @@
 Performance analysis of **Serial C**, **OpenMP**, **MPI**, and **CUDA** K-Means implementations on a large synthetic e-commerce dataset.
 
 The full workflow is in:
-- `/home/runner/work/parallel_kmeans_performance_analysis/parallel_kmeans_performance_analysis/parallel_kmeans_project.ipynb`
+- `parallel_kmeans_project.ipynb`
 
 ## Project Scope
 
